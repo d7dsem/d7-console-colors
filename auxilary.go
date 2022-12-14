@@ -73,3 +73,11 @@ func ExampleForeGround() {
 
 	fmt.Println(builder.String())
 }
+
+func colorize(d interface{}, color string) string {
+	s := strings.Builder{}
+	s.WriteString(color)
+	s.WriteString(fmt.Sprintf("%v", d))
+	s.WriteString(RESET)
+	return s.String()
+}
