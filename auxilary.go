@@ -2,7 +2,10 @@ package d7cc
 
 import (
 	"fmt"
+	"os"
 	"strings"
+
+	"golang.org/x/sys/windows"
 )
 
 // Reset sequence
@@ -81,6 +84,7 @@ func Colorize(d interface{}, color string) string {
 	s.WriteString(RESET)
 	return s.String()
 }
+
 func TurnOnColorizing() {
 	// Reset sequence
 	RESET = "\u001b[0m"
@@ -130,6 +134,7 @@ func TurnOnColorizing() {
 	TXT_UNDERLINE = "\u001b[4m"
 	TEX_REVERSED = "\u001b[7m" // change places of FG and BG colors
 }
+
 func TurnOffColorizing() {
 	// Reset sequence
 	RESET = ""
@@ -178,4 +183,20 @@ func TurnOffColorizing() {
 	TXT_BOLD = ""
 	TXT_UNDERLINE = ""
 	TEX_REVERSED = "" // change places of FG and BG colors
+}
+
+func TurnOnVirtualTerminalProcesingWindows() {
+	stdout := windows.Handle(os.Stdout.Fd())
+	var originalMode uint32
+
+	windows.GetConsoleMode(stdout, &originalMode)
+	windows.SetConsoleMode(stdout, originalMode|windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+}
+
+func FormForegroundRGBColor(r, g, b int) string {
+	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
+}
+
+func FormBackroundRGBColor(r, g, b int) string {
+	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
 }
